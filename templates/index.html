@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="hero py-5 mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h1 class="display-4 fw-bold mb-3">Boost Your Career with AI</h1>
+            <p class="lead mb-4">ThriveMate is your AI-powered career assistant that helps you analyze resumes, find job opportunities, and get career advice.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/resume-analyzer" class="btn btn-primary btn-lg">
+                    <i class="bi bi-file-earmark-text me-2"></i> Analyze Resume
+                </a>
+                <a href="/job-recommender" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-search me-2"></i> Find Jobs
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://pixabay.com/get/g0e72991ae6dbe32b0b13cf0f46ad94a68156b32e55a9847f5f5d1fa3860ebe78ea1899b4bf7385c2b7a5d4f70164b56e40288e68451dc2923b38e5cbf6367f67_1280.jpg" alt="Career Development" class="img-fluid rounded">
+        </div>
+    </div>
+</section>
+
+<section class="features mb-5">
+    <h2 class="text-center mb-5">How ThriveMate Can Help You</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <img src="https://pixabay.com/get/geb57afe4ab377f5de977274c88edfb127b6cffd949902f881fd3bc15b1e96f14954920964387d653c65688a6469b335066537ac57d07704f21bc78db6b170335_1280.jpg" class="card-img-top" alt="Resume Analysis">
+                <div class="card-body text-center">
+                    <img src="/static/assets/resume_icon.svg" alt="Resume Icon" class="feature-icon">
+                    <h3 class="card-title">Resume Analyzer</h3>
+                    <p class="card-text">Upload your resume to get it analyzed by our AI. Receive feedback, an ATS score, and suggestions for improvement.</p>
+                    <a href="/resume-analyzer" class="btn btn-primary">Analyze Resume</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <img src="https://pixabay.com/get/gb7d0071745bedad0adddf5d66f0d4cd123a69bf826b6a22b94ac6bec6f423dbecade39f1d74061e97f071ea784635fb8d9c24add2345866bb214138a7edfff89_1280.jpg" class="card-img-top" alt="Job Search">
+                <div class="card-body text-center">
+                    <img src="/static/assets/job_icon.svg" alt="Job Icon" class="feature-icon">
+                    <h3 class="card-title">Job Recommender</h3>
+                    <p class="card-text">Find job opportunities that match your skills and preferences. Filter by location, role, and more.</p>
+                    <a href="/job-recommender" class="btn btn-primary">Find Jobs</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <img src="https://pixabay.com/get/g520c05522556ba934c98085cf52f94cfb8a9b3b5c8c51b382bf4b82848bcebee790973bcdfcb97e0abd3383e6b852626b96a42b90295bde4813c64d58840a8af_1280.png" class="card-img-top" alt="AI Career Chat">
+                <div class="card-body text-center">
+                    <img src="/static/assets/chat_icon.svg" alt="Chat Icon" class="feature-icon">
+                    <h3 class="card-title">AI Career Chat</h3>
+                    <p class="card-text">Get personalized career advice, interview tips, and answers to your job-related questions.</p>
+                    <a href="/career-chat" class="btn btn-primary">Ask AI Assistant</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works mb-5">
+    <h2 class="text-center mb-5">How It Works</h2>
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 order-md-2 mb-4 mb-md-0">
+            <img src="https://pixabay.com/get/ge4b375edab27d6255bae0fc607897258a069ad8c4572590fee84c7a44041309aa17eb1e81b893836ff638aee33eaa2cc46e74337b23af478c42d29a044facd8d_1280.jpg" alt="Resume Analysis Process" class="img-fluid rounded">
+        </div>
+        <div class="col-md-6 order-md-1">
+            <h3 class="mb-3">1. Upload Your Resume</h3>
+            <p class="mb-4">Simply upload your resume in PDF or DOC format to get started. Our AI will analyze the content and structure of your document.</p>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Extract key skills and experience</span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Identify education and qualifications</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Calculate your ATS compatibility score</span>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <img src="https://pixabay.com/get/g28acb5000b37e97d5e019a3b285fed7cb3b8300d0993b56936415ad81ef194b9ddd884b7af1a1ec1c38763a19a7d2186c519fd97df7d237628c529a32c73bd30_1280.jpg" alt="Job Search Process" class="img-fluid rounded">
+        </div>
+        <div class="col-md-6">
+            <h3 class="mb-3">2. Discover Job Opportunities</h3>
+            <p class="mb-4">Based on your skills and preferences, we'll recommend job openings that match your profile from across the web.</p>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Search jobs by skills, title, or location</span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Filter results by salary, experience level, and more</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Get direct links to apply for positions</span>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-md-6 order-md-2 mb-4 mb-md-0">
+            <img src="https://pixabay.com/get/g925c4825dff0c0f235dd46dfd95364418565cc61cfea61fb8226066d0210921b4d99e3f04c98a3f4a19da3bfcb4ede5dcb171403dc2063412f748cf183ca1ea0_1280.jpg" alt="Career Chat Process" class="img-fluid rounded">
+        </div>
+        <div class="col-md-6 order-md-1">
+            <h3 class="mb-3">3. Get Expert Career Advice</h3>
+            <p class="mb-4">Have questions about your career path, interview preparation, or job application? Ask our AI assistant for personalized guidance.</p>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Get interview tips and sample answers</span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Learn about career advancement strategies</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span>Receive advice on resume improvement</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta text-center py-5 mb-5 bg-dark rounded">
+    <h2 class="mb-4">Ready to advance your career?</h2>
+    <p class="lead mb-4">Start with a free resume analysis and discover your next career opportunity.</p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="/resume-analyzer" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="/career-chat" class="btn btn-outline-light btn-lg">Ask Career Questions</a>
+    </div>
+</section>
+{% endblock %}

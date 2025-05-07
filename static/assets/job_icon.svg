@@ -1,0 +1,20 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .primary { fill: #3498db; }
+    .secondary { fill: #2c3e50; }
+    .accent { fill: #ecf0f1; }
+  </style>
+  <g>
+    <!-- Briefcase -->
+    <rect x="15" y="25" width="50" height="40" rx="3" class="primary" />
+    <rect x="30" y="15" width="20" height="10" class="secondary" />
+    
+    <!-- Handle -->
+    <rect x="35" y="25" width="10" height="5" class="accent" />
+    
+    <!-- Details -->
+    <rect x="25" y="35" width="30" height="5" rx="2" class="accent" />
+    <rect x="25" y="45" width="30" height="5" rx="2" class="accent" />
+    <rect x="25" y="55" width="20" height="5" rx="2" class="accent" />
+  </g>
+</svg>

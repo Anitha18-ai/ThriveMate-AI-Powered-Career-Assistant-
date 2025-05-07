@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="mb-3">AI Career Chat Assistant</h1>
+        <p class="lead">Ask questions about your career, job search, interviews, or resume to get personalized advice.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div id="chat-container" class="chat-container mb-4">
+                    <div id="chat-messages">
+                        <!-- Initial bot message -->
+                        <div class="chat-message bot-message">
+                            Hi there! I'm your AI career assistant. How can I help you today?
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="chat-form">
+                    <div class="position-relative">
+                        <input type="text" id="chat-input" class="form-control chat-input" placeholder="Type your question here..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary rounded-circle chat-send-button">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-center mb-4">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearChat()">
+                <i class="bi bi-trash me-2"></i> Clear Chat
+            </button>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Sample Questions</h5>
+                <p class="text-muted small mb-3">Click on any question to use it as a prompt:</p>
+                <ul class="list-group">
+                    <li class="list-group-item example-question">How can I improve my resume for tech jobs?</li>
+                    <li class="list-group-item example-question">What are common interview questions for project managers?</li>
+                    <li class="list-group-item example-question">How should I answer "What's your biggest weakness?"</li>
+                    <li class="list-group-item example-question">What skills are important for data scientists?</li>
+                    <li class="list-group-item example-question">How can I negotiate a higher salary?</li>
+                    <li class="list-group-item example-question">What should I include in my cover letter?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Features</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Resume advice and tips
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Interview question practice
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Career path guidance
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Skill development recommendations
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Job search strategies
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Need More Help?</h5>
+                <p>Use our other tools to boost your job search:</p>
+                <div class="d-grid gap-2">
+                    <a href="/resume-analyzer" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-file-earmark-text me-2"></i> Analyze Your Resume
+                    </a>
+                    <a href="/job-recommender" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-search me-2"></i> Find Job Opportunities
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/career_chat.js"></script>
+{% endblock %}

@@ -1,0 +1,195 @@
+/* Custom styles for ThriveMate */
+
+/* General Styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.navbar-brand img {
+    height: 30px;
+    margin-right: 8px;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Cards */
+.feature-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+}
+
+/* Resume Analyzer */
+.resume-upload-area {
+    border: 2px dashed var(--bs-gray-400);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.resume-upload-area:hover {
+    border-color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.ats-score-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.ats-score {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Job Recommender */
+.job-card {
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.job-card:hover {
+    transform: translateX(5px);
+}
+
+.filter-sidebar {
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+/* AI Career Chat */
+.chat-container {
+    height: 500px;
+    overflow-y: auto;
+    border-radius: 10px;
+}
+
+.chat-message {
+    border-radius: 18px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: var(--bs-primary);
+    color: white;
+    border-top-right-radius: 4px;
+    margin-left: auto;
+}
+
+.bot-message {
+    background-color: var(--bs-gray-200);
+    color: var(--bs-gray-900);
+    border-top-left-radius: 4px;
+}
+
+.chat-input {
+    border-radius: 20px;
+    padding-right: 50px;
+}
+
+.chat-send-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Loading Animations */
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* ATS Score Progress Circle */
+.progress-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.progress-circle svg {
+    width: 100%;
+    height: 100%;
+}
+
+.progress-circle svg circle {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transform: translate(5px, 5px);
+}
+
+.progress-circle svg circle.bg {
+    stroke: var(--bs-gray-200);
+}
+
+.progress-circle svg circle.progress {
+    stroke: var(--bs-primary);
+    stroke-dasharray: 440;
+    transition: stroke-dashoffset 1s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .feature-card .card-img-top {
+        height: 160px;
+    }
+    
+    .ats-score-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .ats-score {
+        font-size: 2rem;
+    }
+    
+    .chat-container {
+        height: 400px;
+    }
+}
