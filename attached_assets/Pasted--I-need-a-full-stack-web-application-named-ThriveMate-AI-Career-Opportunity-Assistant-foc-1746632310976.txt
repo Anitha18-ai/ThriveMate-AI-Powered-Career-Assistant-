@@ -1,0 +1,64 @@
+> I need a full-stack web application named **ThriveMate – AI Career & Opportunity  Assistant** (focus only on career development). The app must include three main modules:
+>
+> ---
+>
+> ### 1. **Resume Analyzer**
+>
+> * Users can upload resumes (PDF/DOC).
+> * Extract key data: skills, education, experience, keywords.
+> * Show improvement suggestions and an **ATS Score**.
+> * Use `spaCy` (local) or Hugging Face (`sentence-transformers/all-MiniLM-L6-v2`) for keyword and semantic matching (optional).
+>
+> ### 2. **Job Recommender**
+>
+> * Recommend jobs based on extracted resume skills or selected fields.
+> * Use the free **JSearch API** via RapidAPI (100 req/day free).
+> * Display jobs with filters and sorting options (e.g., by location, role, relevance).
+>
+> ### 3. **AI Career Chat Assistant**
+>
+> * A chatbot to answer questions related to career, interviews, resumes, etc.
+> * Use the free Hugging Face API with `microsoft/DialoGPT-medium`.
+> * Works in single-turn (no memory of past messages).
+>
+> ---
+>
+> ### 🔧 Tech Stack (free tools only):
+>
+> * **Frontend**: HTML5, CSS3, Bootstrap, JavaScript
+> * **Backend**: Python Flask
+> * **Database**: Firebase Firestore (Free)
+> * **Resume Upload**: Firebase Storage (Free)
+> * **Hosting**: Firebase Hosting (Free)
+> * **NLP Tools**: spaCy (local), Hugging Face API (free tier)
+> * **Authentication**: Firebase Auth (Free)
+>
+> ---
+>
+> ### 🔐 API Integration:
+>
+> * Hugging Face API: Use API token to access the two models above.
+> * JSearch API (RapidAPI): Use API key to fetch job listings.
+>
+> ---
+>
+> ### 🧠 Additional Notes:
+>
+> * No paid services must be used.
+> * Everything must run under free-tier limits.
+> * The app must be modular, clean UI, and beginner-friendly (since I’m not an expert).
+> * Provide instructions for setting up, installing dependencies (requirements.txt), and running the project locally.
+> * Use simple Flask + HTML/JS-based folder structure (not React or Vue).
+> * Make sure all components are integrated and functional.
+>
+> ---
+>
+> ✅ Please provide:
+>
+> 1. Full project code (HTML, CSS ,JS , Python files, folder structure).
+> 2. Instructions to run the backend server and frontend locally.
+> 3.  code for using Hugging Face API and JSearch API properly.
+> 4. Optionally include Firebase setup for resume uploads (or mock it if needed).
+> 5. Clean UI with Bootstrap cards, buttons, and layout.
+>
+> This is for my **college final-year project** and must be complete and working. I have only **2 days left**, so please give everything correctly in one go.
