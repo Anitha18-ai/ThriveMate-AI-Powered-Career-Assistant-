@@ -1,0 +1,18 @@
+# Secrets & API keys
+.env
+config.py
+firebase-credentials.json
+
+# Python build
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code settings
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
