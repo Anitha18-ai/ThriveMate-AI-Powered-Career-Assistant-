@@ -1,11 +1,18 @@
 import os
 import logging
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+# Import new resume analyzer without spaCy
 from services.resume_analyzer import analyze_resume, calculate_ats_score
 from services.job_recommender import search_jobs
 from services.career_chat import get_career_advice
 from utils.firebase_utils import init_firebase
 from utils.text_extraction import extract_text_from_file
+# Import Firestore database utilities
+from utils.firebase_db import (
+    save_user, get_user_by_firebase_uid, save_resume_analysis, 
+    get_user_resume_analyses, save_job_search, save_job,
+    get_saved_jobs, save_chat_message, get_chat_history
+)
 from models import db, User, ResumeAnalysis, JobSearch, SavedJob, ChatMessage
 import config
 
@@ -92,26 +99,53 @@ def create_user():
         if not data or 'firebase_uid' not in data or 'email' not in data:
             return jsonify({'error': 'Missing required user data'}), 400
         
-        # Check if user already exists
-        existing_user = User.query.filter_by(firebase_uid=data['firebase_uid']).first()
-        if existing_user:
-            return jsonify({'message': 'User already exists', 'user_id': existing_user.id}), 200
+        firebase_uid = data['firebase_uid']
+        email = data['email']
+        display_name = data.get('display_name')
         
-        # Create new user
-        new_user = User(
-            firebase_uid=data['firebase_uid'],
-            email=data['email'],
-            display_name=data.get('display_name')
-        )
+        # First, try to save to Firebase if available
+        if firestore_db:
+            # Check if user already exists in Firebase
+            existing_user = get_user_by_firebase_uid(firebase_uid)
+            if existing_user:
+                return jsonify({'message': 'User already exists', 'user_id': firebase_uid}), 200
+            
+            # Save to Firebase
+            user_id = save_user(firebase_uid, email, display_name)
+            if user_id:
+                logger.info(f"New user created in Firebase: {email}")
+                return jsonify({'message': 'User created successfully', 'user_id': user_id}), 201
         
-        db.session.add(new_user)
-        db.session.commit()
+        # Fallback to PostgreSQL if Firebase is not available or failed
+        if DATABASE_URL:
+            try:
+                # Check if user already exists
+                existing_user = User.query.filter_by(firebase_uid=firebase_uid).first()
+                if existing_user:
+                    return jsonify({'message': 'User already exists', 'user_id': existing_user.id}), 200
+                
+                # Create new user
+                new_user = User(
+                    firebase_uid=firebase_uid,
+                    email=email,
+                    display_name=display_name
+                )
+                
+                db.session.add(new_user)
+                db.session.commit()
+                
+                logger.info(f"New user created in PostgreSQL: {email}")
+                return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
+            except Exception as e:
+                db.session.rollback()
+                logger.exception("Error creating user in PostgreSQL")
+                return jsonify({'error': str(e)}), 500
         
-        logger.info(f"New user created: {new_user.email}")
-        return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
+        # If neither database is available
+        logger.error("No database available for user creation")
+        return jsonify({'error': 'Database not available'}), 500
     
     except Exception as e:
-        db.session.rollback()
         logger.exception("Error creating user")
         return jsonify({'error': str(e)}), 500
 

@@ -39,13 +39,47 @@ def init_firebase():
         logger.warning("Firebase SDK is not available. Skipping initialization.")
         return None, None, None
     
-    # For the Replit environment, we'll disable full Firebase admin functionality
-    # and just return placeholders for the client-side Firebase setup
-    logger.info("Firebase server functionality is disabled in this environment.")
-    logger.info("Client-side Firebase authentication will still be available.")
-    
-    # Return None for all Firebase components
-    return None, None, None
+    try:
+        # Get Firebase credentials
+        firebase_project_id = os.environ.get("FIREBASE_PROJECT_ID")
+        
+        if not firebase_project_id:
+            logger.warning("Firebase Project ID not found. Skipping initialization.")
+            return None, None, None
+            
+        # Check if we have a credentials file
+        cred_path = os.environ.get("FIREBASE_CREDENTIALS_PATH")
+        
+        if cred_path and os.path.exists(cred_path):
+            # Initialize with service account credentials
+            cred = credentials.Certificate(cred_path)
+            firebase_app = firebase_admin.initialize_app(cred, {
+                'storageBucket': f"{firebase_project_id}.appspot.com"
+            })
+            logger.info("Firebase initialized with service account credentials.")
+        else:
+            # Initialize with default credentials (for Replit environment or local)
+            firebase_app = firebase_admin.initialize_app(options={
+                'projectId': firebase_project_id,
+                'storageBucket': f"{firebase_project_id}.appspot.com"
+            })
+            logger.info("Firebase initialized with default configuration.")
+        
+        # Get Firebase services
+        firebase_storage = storage.bucket()
+        firebase_db = firestore.client()
+        
+        logger.info("Firebase services initialized successfully.")
+        return firebase_app, firebase_storage, firebase_db
+        
+    except Exception as e:
+        logger.exception(f"Error initializing Firebase: {str(e)}")
+        
+        # For the Replit environment, we'll fall back to client-side Firebase
+        logger.info("Falling back to client-side Firebase authentication only.")
+        
+        # Return None for all Firebase components
+        return None, None, None
 
 def upload_file_to_storage(file_data, file_path):
     """

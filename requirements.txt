@@ -1,0 +1,12 @@
+firebase-admin
+flask
+flask-sqlalchemy
+gunicorn
+python-dotenv
+pypdf2
+python-docx
+requests
+flask-cors
+flask-socketio
+opentelemetry-api
+opentelemetry-instrumentation

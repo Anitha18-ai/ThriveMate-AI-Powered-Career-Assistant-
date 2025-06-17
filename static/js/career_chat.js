@@ -1,13 +1,8 @@
-// Career Chat JavaScript
-
 let messageHistory = [];
 let isProcessing = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize chat form
     initializeChatForm();
-    
-    // Add example questions
     setupExampleQuestions();
 });
 
@@ -15,10 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeChatForm() {
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const clearChatButton = document.getElementById('clear-chat-button');
     
     if (!chatForm || !chatInput) return;
     
-    // Handle form submission
     chatForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -26,77 +22,50 @@ function initializeChatForm() {
         
         if (!message || isProcessing) return;
         
-        // Send the message
         sendMessage(message);
-        
-        // Clear input
         chatInput.value = '';
+        chatInput.focus();
     });
 }
 
 // Send a message to the AI
 function sendMessage(message) {
-    // Check if already processing
     if (isProcessing) return;
     
-    // Add user message to chat
     addMessageToChat('user', message);
-    
-    // Set processing state
-    isProcessing = true;
-    
-    // Show typing indicator
+    setProcessingState(true);
     addTypingIndicator();
     
-    // Make API request
     fetch('/api/career-advice', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            message: message
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
     })
     .then(data => {
-        // Remove typing indicator
         removeTypingIndicator();
-        
-        // Reset processing state
-        isProcessing = false;
-        
-        // Add bot response to chat
-        if (data.response) {
-            addMessageToChat('bot', data.response);
-        } else {
-            addMessageToChat('bot', "I'm sorry, I couldn't generate a response. Please try again.");
-        }
-        
-        // Scroll to bottom
-        scrollChatToBottom();
+        setProcessingState(false);
+        addMessageToChat('bot', data.response || "I'm sorry, I couldn't generate a response. Please try again.");
     })
     .catch(error => {
-        // Remove typing indicator
         removeTypingIndicator();
-        
-        // Reset processing state
-        isProcessing = false;
-        
-        // Add error message
+        setProcessingState(false);
         addMessageToChat('bot', "I'm sorry, there was an error processing your request. Please try again.");
-        
-        // Show error toast
         showToast('Error', error.message);
-        
-        // Scroll to bottom
-        scrollChatToBottom();
     });
+}
+
+// Manage UI state during processing
+function setProcessingState(state) {
+    isProcessing = state;
+    const sendButton = document.getElementById('send-button');
+    const clearChatButton = document.getElementById('clear-chat-button');
+    
+    if (sendButton) sendButton.disabled = state;
+    if (clearChatButton) clearChatButton.disabled = state;
 }
 
 // Add a message to the chat
@@ -107,19 +76,10 @@ function addMessageToChat(sender, message) {
     const messageElement = document.createElement('div');
     messageElement.className = `chat-message ${sender}-message`;
     
-    // Format URLs in the message
-    const formattedMessage = formatMessageWithLinks(message);
-    
-    messageElement.innerHTML = formattedMessage;
+    messageElement.innerHTML = formatMessageWithLinks(message);
     chatMessages.appendChild(messageElement);
     
-    // Add to message history
-    messageHistory.push({
-        sender: sender,
-        message: message
-    });
-    
-    // Scroll to bottom
+    messageHistory.push({ sender, message });
     scrollChatToBottom();
 }
 
@@ -134,25 +94,19 @@ function addTypingIndicator() {
     typingIndicator.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
     
     chatMessages.appendChild(typingIndicator);
-    
-    // Scroll to bottom
     scrollChatToBottom();
 }
 
 // Remove typing indicator
 function removeTypingIndicator() {
     const typingIndicator = document.getElementById('typing-indicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
-    }
+    if (typingIndicator) typingIndicator.remove();
 }
 
 // Scroll chat to bottom
 function scrollChatToBottom() {
     const chatContainer = document.getElementById('chat-container');
-    if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+    if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 // Setup example questions
@@ -161,42 +115,35 @@ function setupExampleQuestions() {
     
     exampleQuestions.forEach(question => {
         question.addEventListener('click', function() {
-            const questionText = this.textContent;
-            
-            // Set input value
+            const questionText = this.textContent.trim();
             const chatInput = document.getElementById('chat-input');
+            
             if (chatInput) {
                 chatInput.value = questionText;
                 chatInput.focus();
             }
-            
-            // Optionally, send the message directly
-            // sendMessage(questionText);
+        });
+        
+        // Optional: allow keyboard accessibility (enter key)
+        question.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
         });
     });
 }
 
 // Format message with clickable links
 function formatMessageWithLinks(text) {
-    // URL regex pattern
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    
-    // Replace URLs with clickable links
-    return text.replace(urlRegex, function(url) {
-        return `<a href="${url}" target="_blank">${url}</a>`;
-    });
+    return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
 }
 
 // Clear chat
 function clearChat() {
     const chatMessages = document.getElementById('chat-messages');
-    if (chatMessages) {
-        chatMessages.innerHTML = '';
-    }
-    
-    // Reset message history
+    if (chatMessages) chatMessages.innerHTML = '';
     messageHistory = [];
-    
-    // Add welcome message
-    addMessageToChat('bot', 'Hi there! I\'m your AI career assistant. How can I help you today?');
+    addMessageToChat('bot', "Hi there! I'm your AI career assistant. How can I help you today?");
 }

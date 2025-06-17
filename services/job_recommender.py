@@ -1,3 +1,4 @@
+from flask import Blueprint, request, jsonify
 import os
 import requests
 import logging
@@ -8,176 +9,116 @@ import config
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+job_recommender_bp = Blueprint('job_recommender', __name__)
+
+# -------------------- ROUTE --------------------
+@job_recommender_bp.route('/recommend_jobs', methods=['POST'])
+def recommend_jobs():
+    data = request.get_json()
+    keywords = data.get('keywords', '')
+    location = data.get('location', '')
+    
+    logger.info(f"Received job recommendation request: keywords={keywords}, location={location}")
+    
+    results = search_jobs(keywords, location)
+    return jsonify(results)
+
+# -------------------- API FUNCTIONS --------------------
+
+def get_api_key() -> str:
+    return os.environ.get('JSEARCH_API_KEY', config.JSEARCH_API_KEY)
+
 def search_jobs(keywords: str, location: str = '', page: int = 1, page_size: int = 10) -> Dict[str, Any]:
-    """
-    Search for jobs using the JSearch API
-    
-    Args:
-        keywords: Job title, skills, or keywords to search for
-        location: Location for the job search (optional)
-        page: Page number for pagination
-        page_size: Number of results per page
-        
-    Returns:
-        Dictionary containing job listings and metadata
-    """
-    logger.debug(f"Searching jobs with keywords: {keywords}, location: {location}, page: {page}")
-    
-    # Get API key from environment variables
-    api_key = os.environ.get('JSEARCH_API_KEY', config.JSEARCH_API_KEY)
-    
+    logger.debug(f"Searching jobs with keywords='{keywords}', location='{location}', page={page}")
+    api_key = get_api_key()
     if not api_key:
         logger.error("JSearch API key not found")
-        return {
-            "error": "API key not configured",
-            "jobs": [],
-            "total_jobs": 0
-        }
-    
-    # Prepare request parameters
+        return {"error": "API key not configured", "jobs": [], "total_jobs": 0}
+
     url = config.JSEARCH_API_URL
-    querystring = {
+    params = {
         "query": keywords,
         "page": str(page),
         "num_pages": "1",
         "page_size": str(page_size)
     }
-    
-    # Add location if provided
     if location:
-        querystring["location"] = location
-    
+        params["location"] = location
+
     headers = {
         "X-RapidAPI-Key": api_key,
         "X-RapidAPI-Host": "jsearch.p.rapidapi.com"
     }
-    
+
     try:
-        # Make the API request
-        response = requests.get(url, headers=headers, params=querystring)
-        response.raise_for_status()  # Raise exception for HTTP errors
-        
-        # Parse response data
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
         data = response.json()
-        
-        # Check if request was successful
+
         if data.get("status") != "OK":
-            logger.error(f"API request failed: {data.get('message', 'Unknown error')}")
-            return {
-                "error": data.get("message", "API request failed"),
-                "jobs": [],
-                "total_jobs": 0
-            }
-        
-        # Extract job listings
-        raw_jobs = data.get("data", [])
-        processed_jobs = process_job_listings(raw_jobs)
-        
-        # Get total jobs count (estimate based on API response)
+            logger.error(f"JSearch API request failed: {data.get('message', 'Unknown error')}")
+            return {"error": data.get("message", "API request failed"), "jobs": [], "total_jobs": 0}
+
+        jobs_data = data.get("data", [])
+        processed_jobs = process_job_listings(jobs_data)
         total_jobs = data.get("total_jobs", len(processed_jobs))
-        
-        return {
-            "jobs": processed_jobs,
-            "total_jobs": total_jobs
-        }
-        
+
+        return {"jobs": processed_jobs, "total_jobs": total_jobs}
+
     except requests.exceptions.RequestException as e:
-        logger.exception(f"Error fetching job listings: {str(e)}")
-        return {
-            "error": str(e),
-            "jobs": [],
-            "total_jobs": 0
-        }
+        logger.exception("Error fetching job listings")
+        return {"error": str(e), "jobs": [], "total_jobs": 0}
 
 def process_job_listings(raw_jobs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Process raw job listings from API response into a clean format
-    
-    Args:
-        raw_jobs: List of job listings from the API
-        
-    Returns:
-        List of processed job listings
-    """
     processed_jobs = []
-    
     for job in raw_jobs:
-        job_data = job.get("job_id", {})
-        
-        # Extract relevant fields
         processed_job = {
-            "id": job_data.get("id", ""),
-            "title": job_data.get("title", ""),
-            "company": job_data.get("company_name", ""),
-            "company_logo": job_data.get("company_logo", ""),
-            "location": job_data.get("location", ""),
-            "description": job_data.get("description", ""),
-            "date": job_data.get("posted_at", ""),
-            "url": job_data.get("job_apply_link", "") or job_data.get("job_link", "")
+            "id": job.get("job_id", ""),
+            "title": job.get("job_title", ""),
+            "company": job.get("employer_name", ""),
+            "company_logo": job.get("employer_logo", ""),
+            "location": f"{job.get('job_city', '')}, {job.get('job_country', '')}",
+            "description": job.get("job_description", ""),
+            "date": job.get("job_posted_at_datetime_utc", ""),
+            "url": job.get("job_apply_link") or job.get("job_google_link", "")
         }
-        
-        # Extract salary information if available
-        if "salary_min" in job_data and job_data["salary_min"] is not None:
-            processed_job["salary_min"] = job_data["salary_min"]
-        
-        if "salary_max" in job_data and job_data["salary_max"] is not None:
-            processed_job["salary_max"] = job_data["salary_max"]
-        
-        if "salary_period" in job_data and job_data["salary_period"] is not None:
-            processed_job["salary_period"] = job_data["salary_period"]
-            
-        # Extract employment type if available
-        if "job_employment_type" in job_data and job_data["job_employment_type"] is not None:
-            processed_job["employment_type"] = job_data["job_employment_type"]
-        
+        if job.get("job_min_salary"):
+            processed_job["salary_min"] = job["job_min_salary"]
+        if job.get("job_max_salary"):
+            processed_job["salary_max"] = job["job_max_salary"]
+        if job.get("job_salary_period"):
+            processed_job["salary_period"] = job["job_salary_period"]
+        if job.get("job_employment_type"):
+            processed_job["employment_type"] = job["job_employment_type"]
         processed_jobs.append(processed_job)
-    
     return processed_jobs
 
+# Optional: function if you plan to use it
 def get_job_details(job_id: str) -> Dict[str, Any]:
-    """
-    Get detailed information for a specific job
-    
-    Args:
-        job_id: The ID of the job to retrieve details for
-        
-    Returns:
-        Dictionary containing detailed job information
-    """
-    # Get API key from environment variables
-    api_key = os.environ.get('JSEARCH_API_KEY', config.JSEARCH_API_KEY)
-    
+    api_key = get_api_key()
     if not api_key:
         logger.error("JSearch API key not found")
         return {"error": "API key not configured"}
-    
-    # Prepare request parameters
+
     url = "https://jsearch.p.rapidapi.com/job-details"
-    querystring = {"job_id": job_id}
-    
+    params = {"job_id": job_id}
     headers = {
         "X-RapidAPI-Key": api_key,
         "X-RapidAPI-Host": "jsearch.p.rapidapi.com"
     }
-    
+
     try:
-        # Make the API request
-        response = requests.get(url, headers=headers, params=querystring)
-        response.raise_for_status()  # Raise exception for HTTP errors
-        
-        # Parse response data
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
         data = response.json()
-        
-        # Check if request was successful
         if data.get("status") != "OK":
-            logger.error(f"API request failed: {data.get('message', 'Unknown error')}")
+            logger.error(f"Failed to fetch job details: {data.get('message', 'Unknown error')}")
             return {"error": data.get("message", "API request failed")}
-        
-        # Extract job details
         job_details = data.get("data", [{}])[0]
-        
         return {"job": job_details}
-        
     except requests.exceptions.RequestException as e:
-        logger.exception(f"Error fetching job details: {str(e)}")
+        logger.exception("Error fetching job details")
         return {"error": str(e)}
+
+# Export for register_routes
+job_recommendation_route = job_recommender_bp
